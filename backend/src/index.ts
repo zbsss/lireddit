@@ -15,17 +15,21 @@ import { createConnection } from 'typeorm';
 import { isDevelopment } from './utils/isDevelopment';
 import { Post } from './entities/Post';
 import { User } from './entities/User';
+import path from 'path';
+import { Updoot } from './entities/Updoot';
 
 const main = async () => {
-  await createConnection({
+  const conn = await createConnection({
     type: 'postgres',
     database: 'lireddit2',
     username: 'postgres',
     password: 'postgres',
     logging: true,
     synchronize: isDevelopment(),
-    entities: [Post, User],
+    entities: [Post, User, Updoot],
+    migrations: [path.join(__dirname, './migrations/*')]
   });
+  conn.runMigrations();
 
   const app = express();
   app.set('trust proxy', isDevelopment());
